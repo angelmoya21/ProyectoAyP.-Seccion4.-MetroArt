@@ -51,14 +51,9 @@ Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consul
         
         self.departamentos = []
         for dep in departamentos_dic:
-            1
             self.departamentos.append(Departamento(dep["departmentId"], dep["displayName"]))
-                
-if __name__ == "__main__":
-    app = MetroArt() 
-    app.start()  
-    
 
  
+
 
 
