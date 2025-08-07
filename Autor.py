@@ -1,24 +1,34 @@
-class autor:
-    def __init__(self,nombre,nacionalidad,fecha_de_nacimiento,fecha_de_muerte,obras):
-        self.nombre=nombre
-        self.nacionalidad=nacionalidad
-        self.fecha_de_nacimiento=fecha_de_nacimiento
-        self.fecha_de_muerte=fecha_de_muerte
-        self.obras=obras
-    
-    def show(self):
-        print('nombre del autor:',self.nombre)
+class Autor:
+    def __init__(self, nombre_autor, nacionalidad, fecha_nacimiento, fecha_fallecimiento):
+        self.nombre = nombre_autor
+        self.nacionalidad = nacionalidad
+        self.fecha_nacimiento = fecha_nacimiento
+        self.fecha_fallecimiento = fecha_fallecimiento
         
-class obra(autor):
-    def __init__(self,id,titulo,nombre, nacionalidad, fecha_de_nacimiento, fecha_de_muerte, tipo,ano_de_creacion,imagen):
-        super().__init__(nombre, nacionalidad, fecha_de_nacimiento, fecha_de_muerte)
-        self.id=id
-        self.tipo=tipo
-        self.ano_de_creacion=ano_de_creacion
-        self.imagen=imagen
-        self.titulo=titulo
     def show(self):
-        super().show()
-        print('id:',self.id)
-        print('titulo:',self.titulo)
-        print('nombre del autor:',self.nombre)
+        pass
+
+class Obra(Autor):
+    def __init__(self, id_obra, titulo, nombre_autor, nacionalidad,  fecha_nacimiento, fecha_fallecimiento, tipo, ano_creacion, imagen):
+        super().__init__(nombre_autor, nacionalidad, fecha_nacimiento, fecha_fallecimiento)
+        self.id_obra = id_obra
+        self.titulo = titulo
+        self.tipo = tipo
+        self.ano_creacion = ano_creacion
+        self.imagen = imagen  
+        
+    def show(self):
+        print(f"ID: {self.id_obra}")
+        print(f"Titulo: {self.titulo}")
+        print(f"Autor: {self.nombre}")
+        
+    def show_detalles(self):
+        print(f"Titulo: {self.titulo}")
+        print(f"Nombre del Artista: {self.nombre}")
+        print(f"Nacionalidad del Artista:{self.nacionalidad}")
+        print(f"Fecha de nacimiento: {self.fecha_nacimiento}")
+        print(f"Fecha de muerte: {self.fecha_fallecimiento}")
+        print(f"Tipo:{self.tipo}")
+        print(f"Año de creacion: {self.ano_creacion}")
+        
+        
