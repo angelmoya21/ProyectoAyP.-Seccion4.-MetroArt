@@ -357,36 +357,45 @@ Ingrese (x) para salir.
 #Funcion que permite mostrar la lista de nacionalidades de los autores 
 
     def mostrar_por_nacionalidad(self):
-        print("")
-        print("---------------------| NACIONALIDADES |---------------------")
-        print("")
-        for nacion in nacionalidades:
-                print(nacion)
-        print("")  
+        while True:
         
-        opcion_nacionalidad = input("""Ingrese la nacionalidad del artista que desea ver o ingrese [x] para salir:
--------> """)
-        opcion_nacionalidad_limpia = opcion_nacionalidad.strip()
-        
-        if opcion_nacionalidad_limpia not in nacionalidades:
-            print('nacionalidad invalida')
-            return
-    
-        elif opcion_nacionalidad_limpia == "x":
-            return
-        
-        try:
-            self.buscar_obras_nacionalidad(opcion_nacionalidad_limpia)
+            print("")
+            print("---------------------| NACIONALIDADES |---------------------")
+            print("")
+            for nacion in nacionalidades:
+                    print(nacion)
+            print("")  
             
-        except ValueError:
-            print("Nacionalidad ingresada invalida")
+            opcion_nacionalidad = input("""Ingrese la nacionalidad del artista que desea ver o ingrese [x] para salir:
+    -------> """)
+            opcion_nacionalidad_limpia = opcion_nacionalidad.strip()
+            
+            if opcion_nacionalidad_limpia not in nacionalidades:
+                print('nacionalidad invalida')
+                return
+        
+            elif opcion_nacionalidad_limpia == "x":
+                return
+            
+            try:
+                self.buscar_obras_nacionalidad(opcion_nacionalidad_limpia)
+                
+            except ValueError:
+                print("Nacionalidad ingresada invalida")
 
 #Funcion que permite buscar en la API las obras por nacionalidad, tambien tiene la opcion de mostrar por paginas en caso de ser demasiadas
        
     def buscar_obras_nacionalidad(self, nacionalidad):
         url_busqueda_nacionalidad_obras = f"https://collectionapi.metmuseum.org/public/collection/v1/search?q={nacionalidad}"
-        obras_nacionalidad_busqueda = requests.get(url_busqueda_nacionalidad_obras)
-        obras_nacionalidad_info = obras_nacionalidad_busqueda.json()
+        
+        try:
+            obras_nacionalidad_busqueda = requests.get(url_busqueda_nacionalidad_obras)
+            obras_nacionalidad_busqueda.raise_for_status()
+            obras_nacionalidad_info = obras_nacionalidad_busqueda.json()
+        
+        except requests.exceptions.RequestException as error:
+            print(f"Error de conexion con la API : {error}")
+            return
         
         total_obras = obras_nacionalidad_info.get("total", 0)
         print(f"Existen un total de {total_obras} obras")
@@ -414,13 +423,19 @@ Ingrese (x) para salir.
             
             
             for obra_id in obras_nacionalidad_lista:
-                url_obra_objeto = f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{obra_id}"
-                obra_busqueda = requests.get(url_obra_objeto)
-                obra_formato = obra_busqueda.json()
+                try:
+                    url_obra_objeto = f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{obra_id}"
+                    obra_busqueda = requests.get(url_obra_objeto)
+                    obra_busqueda.raise_for_status()
+                    obra_formato = obra_busqueda.json()
+                    
+                    nueva_obra = Obra(obra_formato.get("objectID"), obra_formato.get("title", "Desconocido"), obra_formato.get("artistDisplayName", "Desconocido"), obra_formato.get("artistNationality", "Desconocido"), obra_formato.get("artistBeginDate", None), obra_formato.get("artistEndDate", None), obra_formato.get("classification"), obra_formato.get("objectDate"), obra_formato.get("primaryImageSmall"))
+                    self.obra_encontrada.append(nueva_obra)
                 
-                nueva_obra = Obra(obra_formato.get("objectID"), obra_formato.get("title", "Desconocido"), obra_formato.get("artistDisplayName", "Desconocido"), obra_formato.get("artistNationality", "Desconocido"), obra_formato.get("artistBeginDate", None), obra_formato.get("artistEndDate", None), obra_formato.get("classification"), obra_formato.get("objectDate"), obra_formato.get("primaryImageSmall"))
-                self.obra_encontrada.append(nueva_obra)
-                
+                except (requests.exceptions.RequestException, json.decoder.JSONDecodeError) as error:
+                    print(f"Error en la conexion a la API, OBRA:{obra_id} : {error}")
+                    continue 
+                  
             for obra in self.obra_encontrada:
                 print("")
                 obra.show()
