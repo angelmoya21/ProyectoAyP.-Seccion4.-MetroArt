@@ -3,6 +3,9 @@ import json
 from Departamento import Departamento
 from Autor import Autor, Obra
 from Nacionalidades import nacionalidades
+from Imagen import guardar_imagen
+from PIL import Image
+
 
 class MetroArt:
     def __init__(self):
@@ -62,6 +65,7 @@ Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consul
          while True:
             obra_buscada = input("""Ingrese el ID de la Obra que desea visualizar o (x) para salir: 
 ------>ID: """).strip()
+            
             if obra_buscada.lower() == "x":
                 return
             elif not obra_buscada:
@@ -85,6 +89,28 @@ Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consul
                             obra_objeto.show_detalles()
                             print("")
                             print("-------------------------------------------")
+                            
+                            imagen_url = obra_formato.get("primaryImageSmall")
+                            if imagen_url:
+                                opcion_ver_imagen = input("Si desea ver la imagen de la obra (s) si desea salir (x): ").strip().lower()
+                                if opcion_ver_imagen == "s":
+                                    api_url = imagen_url
+                                    nombre_archivo_destino = "logo_aleatorio"
+                                    nombre_archivo_destino=guardar_imagen(api_url, nombre_archivo_destino)
+                                    img = Image.open(nombre_archivo_destino)
+                                    img.show()
+
+
+
+                                    
+                                    guardar_imagen(imagen_url, f"obra_{obra_buscada}")
+                                    
+                                elif opcion_ver_imagen == "x":
+                                    return
+                                
+                                else:
+                                    print("Obra sin imagen asociada")
+                                    
                         except (requests.exceptions.RequestException, json.decoder.JSONDecodeError) as error:
                             print(f"Error en la conexion a la API, OBRA:{obra_buscada} : {error}")
                             continue
