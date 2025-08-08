@@ -1,4 +1,5 @@
-#Funcion main que permite inicializar todas las demas funciones
+#Funcion main que permite inicializar el programa y sus funciones.
+#Desde este archivo debe ser corrido el programa, se recomienda el uso de Run and Debug y una terminal limpia.
 
 from MetroArt import MetroArt
 

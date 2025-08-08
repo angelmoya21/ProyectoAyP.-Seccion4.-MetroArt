@@ -1,6 +1,6 @@
 import requests
 
-# Funcion Auxiliar que descarga una imagen desde un URL y la muestra.
+# Funcion Auxiliar que descarga una imagen desde un URL y la guarda.
 
 def guardar_imagen(url, nombre_archivo):
     try: 
@@ -8,7 +8,7 @@ def guardar_imagen(url, nombre_archivo):
         response.raise_for_status    #Lanza una excepcion para codigos de estado de error (4xx o 5xx)
         
         content_type = response.headers.get("Content-Type")
-        extension = ".png"
+        extension = ".png"  # Valor por defecto
         
         if content_type:
             if "image/png" in content_type:

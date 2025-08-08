@@ -1,4 +1,4 @@
-#Lista de nacionalidades que seran mostradas al usuario
+#Lista de nacionalidades que seran mostradas al usuario guardadas en una lista para su sencilla manipulacion.
 
 nacionalidades=[
     "Afghan",

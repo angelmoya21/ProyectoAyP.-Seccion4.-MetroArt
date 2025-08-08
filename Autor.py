@@ -20,13 +20,14 @@ class Obra(Autor):
         self.tipo = tipo
         self.ano_creacion = ano_creacion
         self.imagen = imagen  
+#Metodo que muestra al Usuario informacion de la obra
         
     def show(self):
         print(f"ID: {self.id_obra}")
         print(f"Titulo: {self.titulo}")
         print(f"Autor: {self.nombre}")
 
-#Metodo que permite mostrar las obras y su autor de forma detallada al usuario cuando sea requerido
+#Metodo que permite mostrar la obra y su informacion de forma detallada al usuario cuando sea requerido
         
     def show_detalles(self):
         print(f"Titulo: {self.titulo}")
