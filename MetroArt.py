@@ -32,9 +32,6 @@ Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consul
            
             elif menu == "3":
                 self.mostrar_obras_autor()
-
-            elif menu =='4':
-                pass
                 
             elif menu == "4":
                 self.mostrar_detalles_obra()
@@ -64,7 +61,7 @@ Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consul
          
          while True:
             obra_buscada = input("""Ingrese el ID de la Obra que desea visualizar o (x) para salir: 
------->""").strip()
+------>ID: """).strip()
             if obra_buscada.lower() == "x":
                 return
             elif not obra_buscada:
@@ -83,9 +80,11 @@ Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consul
                             obra_formato = obra_busqueda_respuesta.json()
             
                             obra_objeto = Obra(obra_formato.get("objectID"), obra_formato.get("title", "Desconocido"), obra_formato.get("artistDisplayName", "Desconocido"), obra_formato.get("artistNationality", "Desconocido"), obra_formato.get("artistBeginDate", None), obra_formato.get("artistEndDate", None), obra_formato.get("classification"), obra_formato.get("objectDate"), obra_formato.get("primaryImageSmall"))  
+                            print("-------------------------------------------")
                             print("")
                             obra_objeto.show_detalles()
-                            
+                            print("")
+                            print("-------------------------------------------")
                         except (requests.exceptions.RequestException, json.decoder.JSONDecodeError) as error:
                             print(f"Error en la conexion a la API, OBRA:{obra_buscada} : {error}")
                             continue
