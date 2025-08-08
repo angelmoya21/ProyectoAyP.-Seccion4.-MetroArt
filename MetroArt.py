@@ -32,6 +32,9 @@ Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consul
            
             elif menu == "3":
                 self.mostrar_obras_autor()
+
+            elif menu =='4':
+                pass
                 
             elif menu == "5":
                 print("Gracias por tu visitarnos, esperamos haya sido de tu agrado")
@@ -307,5 +310,3 @@ Ingrese (x) para salir.
             print("")
             obra.show()
             print("")
-            
-        
