@@ -2,6 +2,7 @@ import requests
 import json
 from Departamento import Departamento
 from Autor import Autor, Obra
+from Nacionalidades import nacionalidades
 
 class MetroArt:
     def __init__(self):
@@ -18,14 +19,17 @@ class MetroArt:
 Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consultar:
 
 1- Ver Deartamentos
-2- Ver Nacionalidades
-3- Ver Autores
-4- Ver Obra
+2- Ver Obras por Nacion
+3- Ver Obras de Autor
+4- Ver Detalles de la Obra
 5- Salir
 -------> """) 
             if menu == "1":
                 self.mostrar_departamento() 
-                
+
+            elif menu=='2':
+                self.mostrar_por_nacionalidad()
+           
             elif menu == "3":
                 self.mostrar_obras_autor()
                 
@@ -191,15 +195,16 @@ Ingrese (x) para salir.
                 try:
                     url_obra_objeto = f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{obra_id}"
                     obra_busqueda = requests.get(url_obra_objeto)
+                    obra_busqueda.raise_for_status()
                     obra_formato = obra_busqueda.json()
             
                     nueva_obra = Obra(obra_formato.get("objectID"), obra_formato.get("title", "Desconocido"), obra_formato.get("artistDisplayName", "Desconocido"), obra_formato.get("artistNationality", "Desconocido"), obra_formato.get("artistBeginDate", None), obra_formato.get("artistEndDate", None), obra_formato.get("classification"), obra_formato.get("objectDate"), obra_formato.get("primaryImageSmall"))
                     self.obra_encontrada.append(nueva_obra)
                 
                 except (requests.exceptions.RequestException, json.decoder.JSONDecodeError) as error:
-                    print(f"Error en la conexion a la API, OBRA: {obra_id} : {error}")
+                    print(f"Error en la conexion a la API, OBRA:{obra_id} , OBRA: {obra_id} : {error}")
                     continue
-                
+                            
             for obra in self.obra_encontrada:
                 print("")
                 obra.show()
@@ -243,5 +248,64 @@ Ingrese (x) para salir.
         
         except requests.exceptions.RequestException as error:
             print(f"Error en la conexion a la API: {error}")   
+
+    def mostrar_por_nacionalidad(self):
+        print("")
+        print("---------------------| NACIONALIDADES |---------------------")
+        print("")
+        for nacion in nacionalidades:
+                print(nacion)
+        print("")  
+        
+        opcion_nacionalidad = input("""Ingrese la nacionalidad del artista que desea ver o ingrese [x] para salir:
+-------> """)
+        opcion_nacionalidad_limpia = opcion_nacionalidad.strip()
+        
+        if opcion_nacionalidad_limpia not in nacionalidades:
+            print('nacionalidad invalida')
+            return
+    
+        elif opcion_nacionalidad_limpia == "x":
+            return
+        
+        try:
+            self.buscar_obras_nacionalidad(opcion_nacionalidad_limpia)
+            
+        except ValueError:
+            print("Nacionalidad ingresada invalida")
+
+        
+        
+    def buscar_obras_nacionalidad(self, nacionalidad, query = "" ):
+        url_busqueda_nacionalidad_obras = f"https://collectionapi.metmuseum.org/public/collection/v1/search?q={nacionalidad}"
+        obras_nacionalidad_busqueda = requests.get(url_busqueda_nacionalidad_obras)
+        obras_nacionalidad_info = obras_nacionalidad_busqueda.json()
+        
+        total_obras = obras_nacionalidad_info.get("total", 0)
+        print(f"Existen un total de {total_obras} obras")
+        
+        obras_nacionalidad_lista = obras_nacionalidad_info.get("objectIDs", [])[:20]
+        
+        if not obras_nacionalidad_lista:
+            print("Este Nacionalidad no posee obras asociadas")
+            return
+        
+        print("\n---------------------| OBRAS |---------------------\n")
+        
+        self.obra_encontrada = []
+        
+        
+        for obra_id in obras_nacionalidad_lista:
+            url_obra_objeto = f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{obra_id}"
+            obra_busqueda = requests.get(url_obra_objeto)
+            obra_formato = obra_busqueda.json()
+            
+            nueva_obra = Obra(obra_formato.get("objectID"), obra_formato.get("title", "Desconocido"), obra_formato.get("artistDisplayName", "Desconocido"), obra_formato.get("artistNationality", "Desconocido"), obra_formato.get("artistBeginDate", None), obra_formato.get("artistEndDate", None), obra_formato.get("classification"), obra_formato.get("objectDate"), obra_formato.get("primaryImageSmall"))
+            self.obra_encontrada.append(nueva_obra)
+            
+        for obra in self.obra_encontrada:
+            print("")
+            obra.show()
+            print("")
             
         
