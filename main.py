@@ -1,3 +1,5 @@
+#Funcion main que permite inicializar todas las demas funciones
+
 from MetroArt import MetroArt
 
 def main():

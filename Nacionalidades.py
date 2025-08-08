@@ -1,3 +1,5 @@
+#Lista de nacionalidades que seran mostradas al usuario
+
 nacionalidades=[
     "Afghan",
     "Albanian",

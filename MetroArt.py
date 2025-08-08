@@ -6,16 +6,23 @@ from Nacionalidades import nacionalidades
 from Imagen import guardar_imagen
 from PIL import Image
 
+#Class MetroArt, contiene todos los metodos que hacen funcionar el codigo
 
 class MetroArt:
+
+#constructor de metroArt que contiene listas vacias para crear los objetos
+
     def __init__(self):
         self.departamentos = []
         self.obras = []
-        
+
+#Funcion start que comunica al main para inicializar el codigo
+
     def start(self):
         self.cargar_datos()
         
-        
+#Menu de opciones e indicaciones para guiar al usuario a la informacion de su interes
+    
         while True:
             print("")
             menu = input("""--------------------------   Bienvenido a MetroArt   --------------------------
@@ -47,7 +54,7 @@ Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consul
                 print("Opcion Invalida")  
      
      
-     
+#Funcion que permite crear los objetos a partir de la api, lo cuales seran necesarios para buscar la obra por su id  
      
     def mostrar_detalles_obra(self):
          url_obras_total = "https://collectionapi.metmuseum.org/public/collection/v1/objects"
@@ -60,7 +67,7 @@ Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consul
          print(f"El numero total de IDs es de : {len(lista_obras_ids)}")
          print(f"Como ejemplo la lista de los primeros 30 IDs es la siguiente: \n {lista_obras_ids[:30]}")
          
-         
+#Funcion que permite mostrar los detalles de cada obra y de su autor segun su id       
          
          while True:
             obra_buscada = input("""Ingrese el ID de la Obra que desea visualizar o (x) para salir: 
@@ -105,10 +112,14 @@ Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consul
                                 
                                 else:
                                     print("Obra sin imagen asociada")
-                                    
+
+#Funcion que permite darle respuesta al usuario ante errores de conexion con la api 
+
                         except (requests.exceptions.RequestException, json.decoder.JSONDecodeError) as error:
                             print(f"Error en la conexion a la API, OBRA:{obra_buscada} : {error}")
                             continue
+
+#Funcion que permite ver las obras de un autor segun su nombre
             
     def mostrar_obras_autor(self):
         while True:
@@ -126,6 +137,8 @@ Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consul
                 obras_autor_busqueda = requests.get(url_busqueda_autor)
                 obras_autor_busqueda.raise_for_status()
                 obras_autor_info = obras_autor_busqueda.json()
+
+#Funcion que permite darle respuesta al usuario ante errores de conexion con la api 
         
             except requests.exceptions.RequestException as error:
                 print(f"Error en la conexion a la API: {error}")
@@ -169,6 +182,8 @@ Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consul
                             nueva_obra.show()
                             print("")
                 
+#Funcion que permite darle respuesta al usuario ante errores de conexion con la api 
+
                     except (requests.exceptions.RequestException, json.decoder.JSONDecodeError) as error:
                         print(f"Error en la conexion a la API. Obra: {obra_id} : {error}")
                         continue
@@ -197,7 +212,8 @@ Ingrese (x) para salir.
                 else:
                     print("Esa opcion no es valida")  
         
-        
+#Funcion que permite mostrar los distintos apartamentos contenidos en la api y el ID de los mismos
+
     def mostrar_departamento(self):
         while True:
             print("")
@@ -219,8 +235,13 @@ Ingrese (x) para salir.
             
             except ValueError:
                 print("ID ingresado invalido")
+
+#Funcion que permite darle respuesta al usuario ante errores de conexion con la api 
+
             except requests.exceptions.RequestException as error:
                 print(f"Error en la conexion a la API: {error}")
+
+#Funcion que permite buscar la obras en la api segun el departamento, tambien presenta la opcion de mostrar y pasar por pagina en caso de ser demasiadas
         
     def buscar_obras_dep(self, departmentId):
         url_busqueda_dep_obras = f"https://collectionapi.metmuseum.org/public/collection/v1/search?departmentId={departmentId}&q=cat"
@@ -229,6 +250,8 @@ Ingrese (x) para salir.
             obras_dep_busqueda = requests.get(url_busqueda_dep_obras)
             obras_dep_busqueda.raise_for_status()
             obras_dep_info = obras_dep_busqueda.json()
+
+#Funcion que permite darle respuesta al usuario ante errores de conexion con la api 
         
         except requests.exceptions.RequestException as error:
             print(f"Error en la conexion a la API: {error}")
@@ -269,6 +292,8 @@ Ingrese (x) para salir.
             
                     nueva_obra = Obra(obra_formato.get("objectID"), obra_formato.get("title", "Desconocido"), obra_formato.get("artistDisplayName", "Desconocido"), obra_formato.get("artistNationality", "Desconocido"), obra_formato.get("artistBeginDate", None), obra_formato.get("artistEndDate", None), obra_formato.get("classification"), obra_formato.get("objectDate"), obra_formato.get("primaryImageSmall"))
                     self.obra_encontrada.append(nueva_obra)
+
+#Funcion que permite darle respuesta al usuario ante errores de conexion con la api 
                 
                 except (requests.exceptions.RequestException, json.decoder.JSONDecodeError) as error:
                     print(f"Error en la conexion a la API, OBRA:{obra_id} : {error}")
@@ -302,6 +327,8 @@ Ingrese (x) para salir.
             
             else:
                 print("Esa opcion no es valida")
+
+#Funcion que permite crear los objetos de tipo Departamento
             
     def cargar_datos(self):
         try:
@@ -314,9 +341,13 @@ Ingrese (x) para salir.
             self.departamentos = []
             for dep in departamentos_dic:
                 self.departamentos.append(Departamento(dep["departmentId"], dep["displayName"]))
+
+#Funcion que permite darle respuesta al usuario ante errores de conexion con la api 
         
         except requests.exceptions.RequestException as error:
             print(f"Error en la conexion a la API: {error}")   
+
+#Funcion que permite mostrar la lista de nacionalidades de los autores 
 
     def mostrar_por_nacionalidad(self):
         print("")
@@ -343,8 +374,8 @@ Ingrese (x) para salir.
         except ValueError:
             print("Nacionalidad ingresada invalida")
 
-        
-        
+#Funcion que permite buscar en la api las obras por nacionalidad, tambien tiene la opcion de mostrar por paginas en caso de ser demasiadas
+       
     def buscar_obras_nacionalidad(self, nacionalidad, query = "" ):
         url_busqueda_nacionalidad_obras = f"https://collectionapi.metmuseum.org/public/collection/v1/search?q={nacionalidad}"
         obras_nacionalidad_busqueda = requests.get(url_busqueda_nacionalidad_obras)
@@ -353,26 +384,60 @@ Ingrese (x) para salir.
         total_obras = obras_nacionalidad_info.get("total", 0)
         print(f"Existen un total de {total_obras} obras")
         
-        obras_nacionalidad_lista = obras_nacionalidad_info.get("objectIDs", [])[:20]
+        Todas_las_obras = obras_nacionalidad_info.get("objectIDs", [])
         
-        if not obras_nacionalidad_lista:
+        if not Todas_las_obras:
             print("Este Nacionalidad no posee obras asociadas")
             return
         
-        print("\n---------------------| OBRAS |---------------------\n")
-        
-        self.obra_encontrada = []
-        
-        
-        for obra_id in obras_nacionalidad_lista:
-            url_obra_objeto = f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{obra_id}"
-            obra_busqueda = requests.get(url_obra_objeto)
-            obra_formato = obra_busqueda.json()
+        pagina_actual=0
+        obras_por_pagina=20
+        total_paginas=(total_obras//obras_por_pagina) + (1 if total_obras % obras_por_pagina != 0 else 0)
+
+        while True:
+            inicio=pagina_actual * obras_por_pagina
+            fin=inicio+obras_por_pagina
+            obras_nacionalidad_lista=Todas_las_obras[inicio:fin]
+            print(f'Mostrando la pagina {pagina_actual+1} de {total_paginas}')
+            print('')
             
-            nueva_obra = Obra(obra_formato.get("objectID"), obra_formato.get("title", "Desconocido"), obra_formato.get("artistDisplayName", "Desconocido"), obra_formato.get("artistNationality", "Desconocido"), obra_formato.get("artistBeginDate", None), obra_formato.get("artistEndDate", None), obra_formato.get("classification"), obra_formato.get("objectDate"), obra_formato.get("primaryImageSmall"))
-            self.obra_encontrada.append(nueva_obra)
+            print("\n---------------------| OBRAS |---------------------\n")
             
-        for obra in self.obra_encontrada:
-            print("")
-            obra.show()
-            print("")
+            self.obra_encontrada = []
+            
+            
+            for obra_id in obras_nacionalidad_lista:
+                url_obra_objeto = f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{obra_id}"
+                obra_busqueda = requests.get(url_obra_objeto)
+                obra_formato = obra_busqueda.json()
+                
+                nueva_obra = Obra(obra_formato.get("objectID"), obra_formato.get("title", "Desconocido"), obra_formato.get("artistDisplayName", "Desconocido"), obra_formato.get("artistNationality", "Desconocido"), obra_formato.get("artistBeginDate", None), obra_formato.get("artistEndDate", None), obra_formato.get("classification"), obra_formato.get("objectDate"), obra_formato.get("primaryImageSmall"))
+                self.obra_encontrada.append(nueva_obra)
+                
+            for obra in self.obra_encontrada:
+                print("")
+                obra.show()
+                print("")
+
+            opcion_pagina=input(f'''----Pagina{pagina_actual+1} de {total_paginas}
+Ingrese (s) para acceder a la siguiente pagina.
+Ingrese (a) para retroceder a la anterior.
+Ingrese (x) para salir.
+----->>''').strip()
+            
+            if opcion_pagina.lower()=='s':
+                if pagina_actual<(total_paginas-1):
+                    pagina_actual +=1
+                else:
+                    print('Ya te encuentras en la ultima pagina')
+
+            elif opcion_pagina.lower() == 'a':
+                if pagina_actual >0:
+                    pagina_actual-=1
+                else:
+                    print('Ya te encuentras en la primera pagina')
+
+            elif opcion_pagina.lower()=='x':
+                return
+            else:
+                print('Esa opcion no es valida')

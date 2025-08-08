@@ -1,3 +1,5 @@
+#Clase departamento con sus atributos
+
 class Departamento:
     def __init__(self, id, nombre):
         self.id = id

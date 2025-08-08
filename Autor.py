@@ -1,3 +1,5 @@
+#Clase autor con sus atributos y metodos
+
 class Autor:
     def __init__(self, nombre_autor, nacionalidad, fecha_nacimiento, fecha_fallecimiento):
         self.nombre = nombre_autor
@@ -7,6 +9,8 @@ class Autor:
         
     def show(self):
         pass
+
+#Clase obra que hereda atributos y metodo de clase autor 
 
 class Obra(Autor):
     def __init__(self, id_obra, titulo, nombre_autor, nacionalidad,  fecha_nacimiento, fecha_fallecimiento, tipo, ano_creacion, imagen):
@@ -21,6 +25,8 @@ class Obra(Autor):
         print(f"ID: {self.id_obra}")
         print(f"Titulo: {self.titulo}")
         print(f"Autor: {self.nombre}")
+
+#Metodo que permite mostrar las obras y su autor de forma detallada al usuario cuando sea requerido
         
     def show_detalles(self):
         print(f"Titulo: {self.titulo}")
