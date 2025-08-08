@@ -33,14 +33,60 @@ Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consul
             elif menu == "3":
                 self.mostrar_obras_autor()
                 
+            elif menu == "4":
+                self.mostrar_detalles_obra()
+                
             elif menu == "5":
                 print("Gracias por tu visitarnos, esperamos haya sido de tu agrado")
                 break
         
             else:
                 print("Opcion Invalida")  
-        
-        
+     
+     
+     
+     
+    def mostrar_detalles_obra(self):
+         url_obras_total = "https://collectionapi.metmuseum.org/public/collection/v1/objects"
+         obras_respuesta = requests.get(url_obras_total)
+         obras_respuesta.raise_for_status()
+         obras_formato = obras_respuesta.json()
+         
+         lista_obras_ids = obras_formato["objectIDs"]
+         
+         print(f"El numero total de IDs es de : {len(lista_obras_ids)}")
+         print(f"Como ejemplo la lista de los primeros 30 IDs es la siguiente: \n {lista_obras_ids[:30]}")
+         
+         
+         
+         while True:
+            obra_buscada = input("""Ingrese el ID de la Obra que desea visualizar o (x) para salir: 
+------>""").strip()
+            if obra_buscada.lower() == "x":
+                return
+            elif not obra_buscada:
+                print("Por favor debe ingresar un Id valido")
+                continue
+            
+            elif obra_buscada.isnumeric:
+                for id in lista_obras_ids:
+                    if id == int(obra_buscada):
+                        try:
+                            url_busqueda_obra = f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{obra_buscada}" 
+                 
+                        
+                            obra_busqueda_respuesta = requests.get(url_busqueda_obra)
+                            obra_busqueda_respuesta.raise_for_status()
+                            obra_formato = obra_busqueda_respuesta.json()
+            
+                            obra_objeto = Obra(obra_formato.get("objectID"), obra_formato.get("title", "Desconocido"), obra_formato.get("artistDisplayName", "Desconocido"), obra_formato.get("artistNationality", "Desconocido"), obra_formato.get("artistBeginDate", None), obra_formato.get("artistEndDate", None), obra_formato.get("classification"), obra_formato.get("objectDate"), obra_formato.get("primaryImageSmall"))  
+                            print("")
+                            obra_objeto.show_detalles()
+                            
+                        except (requests.exceptions.RequestException, json.decoder.JSONDecodeError) as error:
+                            print(f"Error en la conexion a la API, OBRA:{obra_buscada} : {error}")
+                            continue
+            
     def mostrar_obras_autor(self):
         while True:
             autor_buscado = input("""Ingrese el nombre del Autor del que desee ver sus obras o (x) para salir: 
@@ -202,7 +248,7 @@ Ingrese (x) para salir.
                     self.obra_encontrada.append(nueva_obra)
                 
                 except (requests.exceptions.RequestException, json.decoder.JSONDecodeError) as error:
-                    print(f"Error en la conexion a la API, OBRA:{obra_id} , OBRA: {obra_id} : {error}")
+                    print(f"Error en la conexion a la API, OBRA:{obra_id} : {error}")
                     continue
                             
             for obra in self.obra_encontrada:
