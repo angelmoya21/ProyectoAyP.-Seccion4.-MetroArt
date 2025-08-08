@@ -95,15 +95,10 @@ Este es el catalogo de nuestro Museo, por favor elija la opcion que desea consul
                                 opcion_ver_imagen = input("Si desea ver la imagen de la obra (s) si desea salir (x): ").strip().lower()
                                 if opcion_ver_imagen == "s":
                                     api_url = imagen_url
-                                    nombre_archivo_destino = "logo_aleatorio"
-                                    nombre_archivo_destino=guardar_imagen(api_url, nombre_archivo_destino)
+                                    nombre_archivo_destino= guardar_imagen(api_url, f"obra_{obra_buscada}")
                                     img = Image.open(nombre_archivo_destino)
                                     img.show()
 
-
-
-                                    
-                                    guardar_imagen(imagen_url, f"obra_{obra_buscada}")
                                     
                                 elif opcion_ver_imagen == "x":
                                     return
